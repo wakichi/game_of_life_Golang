@@ -10,6 +10,12 @@ func printList(list [][]int){
 		fmt.Println(list[i])
 	}
 }
+func deepCopy(dst [][]int, src [][]int){
+	for i := 0; i < len(dst); i++{
+		copy(dst[i],src[i])
+	}
+}
+
 func main(){
 	var width, height int
 	fmt.Println("enter width as int")
@@ -30,33 +36,36 @@ func main(){
 			}
 		}
 	}
+	fmt.Println("first generation")
 	printList(life)
 	fmt.Println("")
 
 	// turn
-	lifeNext := make([][]int, height)
-	lifeCount:=make([][]int, height)
-	for i := 0; i < height; i++{
-		lifeCount[i] = make([]int, width)
-		lifeNext[i] = make([]int, width)
-		copy(lifeNext[i],life[i])
-	}
-	printList(life)
-	fmt.Println("")
-	for y:=0; y<height; y++{
-		for x:=0; x<width; x++{
-			liveNeighbor := countLiveNeighbor(life, x, y, width, height)
-			// for debug
-			lifeCount[y][x] = liveNeighbor
-			//lifeNextのijを更新する
-			//lifeNextのijのポインタ、liveNeighborを渡せば良さそう？
-			//TODO: 下の行が元凶。たぶんリストのコピーが参照渡しになってるかも
-			updateOneCell(&lifeNext[y][x],life[y][x], liveNeighbor)
+	for i:=0; i<10; i++{
+		lifeNext := make([][]int, height)
+		lifeCount:=make([][]int, height)
+		for i := 0; i < height; i++{
+			lifeCount[i] = make([]int, width)
+			lifeNext[i] = make([]int, width)
+			copy(lifeNext[i],life[i])
 		}
+		for y:=0; y<height; y++{
+			for x:=0; x<width; x++{
+				liveNeighbor := countLiveNeighbor(life, x, y, width, height)
+				// for debug
+				lifeCount[y][x] = liveNeighbor
+				//lifeNextのijを更新する
+				//lifeNextのijのポインタ、liveNeighborを渡せば良さそう？
+				//TODO: 下の行が元凶。たぶんリストのコピーが参照渡しになってるかも
+				updateOneCell(&lifeNext[y][x],life[y][x], liveNeighbor)
+			}
+		}
+		// printList(lifeCount)
+		life = lifeNext
+		fmt.Println(i+1,"th generation")
+		printList(lifeNext)
+		fmt.Println("")
 	}
-	printList(lifeCount)
-	fmt.Println("")
-	printList(lifeNext)
 }
 
 func countLiveNeighbor(list [][]int, x int, y int, width int, height int) int {
