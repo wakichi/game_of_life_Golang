@@ -38,8 +38,9 @@ func main(){
 	lifeCount:=make([][]int, height)
 	for i := 0; i < height; i++{
 		lifeCount[i] = make([]int, width)
+		lifeNext[i] = make([]int, width)
+		copy(lifeNext[i],life[i])
 	}
-	copy(lifeNext, life)
 	printList(life)
 	fmt.Println("")
 	for y:=0; y<height; y++{
@@ -49,6 +50,7 @@ func main(){
 			lifeCount[y][x] = liveNeighbor
 			//lifeNextのijを更新する
 			//lifeNextのijのポインタ、liveNeighborを渡せば良さそう？
+			//TODO: 下の行が元凶。たぶんリストのコピーが参照渡しになってるかも
 			updateOneCell(&lifeNext[y][x],life[y][x], liveNeighbor)
 		}
 	}
@@ -74,10 +76,6 @@ func countLiveNeighbor(list [][]int, x int, y int, width int, height int) int {
 				continue
 			}
 			count+=list[ny][nx]
-			if x == 3 && y == 3{
-
-				fmt.Println(nx, ny, list[ny][nx],count)
-			}
 		}
 	}
 	return count
@@ -96,3 +94,4 @@ func updateOneCell(nextCell *int, nowCell int, liveNeighbor int){
 		*nextCell = 0
 	}
 }
+
