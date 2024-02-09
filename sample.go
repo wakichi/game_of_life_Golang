@@ -6,25 +6,27 @@ import (
 	"time"
 )
 
-func printList(list [][]int){
+type Cell [][]int
+
+func printList(list Cell){
 	for i:=0; i<len(list); i++{
 		fmt.Println(list[i])
 	}
 }
-func deepCopy(dst [][]int, src [][]int){
+func deepCopy(dst Cell, src Cell){
 	for i := 0; i < len(dst); i++{
 		copy(dst[i],src[i])
 	}
 }
 func main2(){
-	var initialCell [][]int
+	var initialCell Cell
 	var numRound  int
 	numRound, initialCell = initialize()
 	runGame(numRound, initialCell)
 }
 
-func initialize()(int, [][]int){
-	var initialCell [][]int
+func initialize()(int, Cell){
+	var initialCell Cell
 	var numRound  int
 	var isRandomCell string
 	fmt.Println("Would you like to use a pre-prepared cell? yes:y, no:any other key")
@@ -38,30 +40,30 @@ func initialize()(int, [][]int){
 	return numRound, initialCell
 }
 
-func runGame(numRound int, initialCell [][]int){
-	var lifeNow [][]int
+func runGame(numRound int, initialCell Cell){
+	var lifeNow Cell
 	deepCopy(lifeNow, initialCell)
 	for i := 0; i<numRound;i++{
-		var lifeNext [][]int
+		var lifeNext Cell
 		lifeNext = runRound(lifeNow)
 		PrintResult(lifeNext)
 		deepCopy(lifeNow, lifeNext)
 	}
 }
 
-func makeRandomCell()[][]int{
-	return [][]int{}
+func makeRandomCell()Cell{
+	return Cell{}
 }
 
-func readPrebuiltCell()[][]int{
-	return [][]int{}
+func readPrebuiltCell()Cell{
+	return Cell{}
 }
 
-func runRound(lifeNow [][]int)[][]int{
-	return [][]int{}
+func runRound(lifeNow Cell)Cell{
+	return Cell{}
 }
-func PrintResult([][]int){
-	
+func PrintResult(Cell){
+
 }
 
 func main(){
@@ -72,7 +74,7 @@ func main(){
 	fmt.Println("enter height as int")
 	fmt.Scan(&height)
 	fmt.Println(height)
-	var life = make([][]int, height)
+	var life = make(Cell, height)
 	for i := 0; i < height; i++{
 		life[i] = make([]int, width)
 	}
@@ -90,8 +92,8 @@ func main(){
 
 	// turn
 	for i:=0; i<100; i++{
-		lifeNext := make([][]int, height)
-		lifeCount:=make([][]int, height)
+		lifeNext := make(Cell, height)
+		lifeCount:=make(Cell, height)
 		for i := 0; i < height; i++{
 			lifeCount[i] = make([]int, width)
 			lifeNext[i] = make([]int, width)
@@ -121,7 +123,7 @@ func main(){
 	}
 }
 
-func countLiveNeighbor(list [][]int, x int, y int, width int, height int) int {
+func countLiveNeighbor(list Cell, x int, y int, width int, height int) int {
 	count :=0
 
 	//遷移のパターンを全列挙、枠外は除外
@@ -142,7 +144,7 @@ func countLiveNeighbor(list [][]int, x int, y int, width int, height int) int {
 	}
 	return count
 }
-func convertLifeCell(life [][]int)[]string{
+func convertLifeCell(life Cell)[]string{
 	res:=make([]string, len(life))
 	converter:=map[int]string{
 		0:"□ ",
