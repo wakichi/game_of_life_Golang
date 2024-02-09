@@ -16,6 +16,38 @@ func deepCopy(dst [][]int, src [][]int){
 		copy(dst[i],src[i])
 	}
 }
+func main2(){
+	initialCell:= [][]int
+	numRound := int
+	initialCell, numRound = initialize()
+	runGame(initialCell, numRound)
+}
+
+func initialize()(int, [][]int){
+	initialCell := [][]int
+	numRound := int
+	isRandomCell:=string
+	fmt.Println("Would you like to use a pre-prepared cell? yes:y, no:any other key")
+	fmt.Scan(&isRandomCell)
+	fmt.Println("how many round do you want to play? enter any non-negative integer")
+	if isRandomCell == "y"{
+		initialCell = makeRandomCell()
+	}else{
+		initialCell = readPrebuiltCell()
+	}
+	return numRound, initialCell
+}
+
+func runGame(numRound int, initialCell [][]int){
+	lifeNow:=[][]int
+	deepCopy(lifeNow, initialCell)
+	for i := 0; i<numRound;i++{
+		lifeNext :=[][]int
+		lifeNext = runRound(lifeNow)
+		printResult(lifeNext)
+		deepCopy(lifeNow, lifeNext)
+	}
+}
 
 func main(){
 	var width, height int
@@ -123,4 +155,3 @@ func updateOneCell(nextCell *int, nowCell int, liveNeighbor int){
 		*nextCell = 0
 	}
 }
-
