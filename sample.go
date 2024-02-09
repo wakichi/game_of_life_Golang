@@ -17,16 +17,16 @@ func deepCopy(dst [][]int, src [][]int){
 	}
 }
 func main2(){
-	initialCell:= [][]int
-	numRound := int
-	initialCell, numRound = initialize()
-	runGame(initialCell, numRound)
+	var initialCell [][]int
+	var numRound  int
+	numRound, initialCell = initialize()
+	runGame(numRound, initialCell)
 }
 
 func initialize()(int, [][]int){
-	initialCell := [][]int
-	numRound := int
-	isRandomCell:=string
+	var initialCell [][]int
+	var numRound  int
+	var isRandomCell string
 	fmt.Println("Would you like to use a pre-prepared cell? yes:y, no:any other key")
 	fmt.Scan(&isRandomCell)
 	fmt.Println("how many round do you want to play? enter any non-negative integer")
@@ -39,14 +39,29 @@ func initialize()(int, [][]int){
 }
 
 func runGame(numRound int, initialCell [][]int){
-	lifeNow:=[][]int
+	var lifeNow [][]int
 	deepCopy(lifeNow, initialCell)
 	for i := 0; i<numRound;i++{
-		lifeNext :=[][]int
+		var lifeNext [][]int
 		lifeNext = runRound(lifeNow)
-		printResult(lifeNext)
+		PrintResult(lifeNext)
 		deepCopy(lifeNow, lifeNext)
 	}
+}
+
+func makeRandomCell()[][]int{
+	return [][]int{}
+}
+
+func readPrebuiltCell()[][]int{
+	return [][]int{}
+}
+
+func runRound(lifeNow [][]int)[][]int{
+	return [][]int{}
+}
+func PrintResult([][]int){
+	
 }
 
 func main(){
