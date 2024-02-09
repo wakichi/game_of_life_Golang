@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"time"
 )
 
 func printList(list [][]int){
@@ -41,7 +42,7 @@ func main(){
 	fmt.Println("")
 
 	// turn
-	for i:=0; i<10; i++{
+	for i:=0; i<100; i++{
 		lifeNext := make([][]int, height)
 		lifeCount:=make([][]int, height)
 		for i := 0; i < height; i++{
@@ -63,8 +64,13 @@ func main(){
 		// printList(lifeCount)
 		life = lifeNext
 		fmt.Println(i+1,"th generation")
-		printList(lifeNext)
+		convertedLife :=convertLifeCell(life)
+		for i:=0; i<height;i++{
+			println(convertedLife[i])
+		}
 		fmt.Println("")
+		time.Sleep(time.Second*1)
+		fmt.Print("\033[H\033[2J")
 	}
 }
 
@@ -89,7 +95,21 @@ func countLiveNeighbor(list [][]int, x int, y int, width int, height int) int {
 	}
 	return count
 }
-
+func convertLifeCell(life [][]int)[]string{
+	res:=make([]string, len(life))
+	converter:=map[int]string{
+		0:"□ ",
+		1:"■ ",
+	}
+	for i:=0;i<len(life);i++{
+		str := ""
+		for j:=0;j<len(life[i]);j++{
+			str+=converter[life[i][j]]
+		}
+		res[i] = str
+	}
+	return res
+}
 func updateOneCell(nextCell *int, nowCell int, liveNeighbor int){
 	//birth rule
 	if nowCell == 0 && liveNeighbor == 3{
