@@ -3,21 +3,56 @@ package main
 import (
 	"fmt"
 	"math/rand"
-	"time"
 )
 
-func printList(list [][]int){
-	for i:=0; i<len(list); i++{
-		fmt.Println(list[i])
-	}
-}
-func deepCopy(dst [][]int, src [][]int){
-	for i := 0; i < len(dst); i++{
-		copy(dst[i],src[i])
-	}
-}
+type Cell [][]int
+
 
 func main(){
+	var initialCell Cell
+	var numRound  int
+	numRound, initialCell = initialize()
+	runGame(numRound, initialCell)
+}
+
+func initialize()(int, Cell){
+	var initialCell Cell
+	var numRound  int
+	var isRandomCell string
+	fmt.Println("Would you like to use a pre-prepared cell? yes:y, no:any other key")
+	fmt.Scan(&isRandomCell)
+	fmt.Println("how many round do you want to play? enter any non-negative integer")
+	fmt.Scan(&numRound)
+	if isRandomCell == "y"{
+		initialCell = makeRandomCell()
+	}else{
+		initialCell = readPrebuiltCell()
+	}
+	return numRound, initialCell
+}
+
+func runGame(numRound int, initialCell Cell){
+	var lifeNow Cell = make(Cell, len(initialCell))
+	for i := 0; i < numRound; i++{
+		lifeNow = make(Cell, len(initialCell[i]))
+	}
+	// DeepCopy(&lifeNow, &initialCell)// todo ここのcopylifeNowにできていない。
+	for i := 0; i < len(initialCell); i++{
+		lifeNow[i] = make([]int, len(initialCell[i]))
+		copy(lifeNow[i],initialCell[i])
+	}
+	for i := 0; i<numRound;i++{
+		var lifeNext Cell
+		lifeNext = runRound(lifeNow)
+		PrintResult(lifeNext, i)
+		// DeepCopy(lifeNow, lifeNext)
+		for i := 0; i < len(lifeNow); i++{
+			copy(lifeNow[i],lifeNext[i])
+		}
+	}
+}
+                                                    
+func makeRandomCell()Cell{
 	var width, height int
 	fmt.Println("enter width as int")
 	fmt.Scan(&width)
@@ -25,7 +60,7 @@ func main(){
 	fmt.Println("enter height as int")
 	fmt.Scan(&height)
 	fmt.Println(height)
-	var life = make([][]int, height)
+	var life = make(Cell, height)
 	for i := 0; i < height; i++{
 		life[i] = make([]int, width)
 	}
@@ -37,44 +72,33 @@ func main(){
 			}
 		}
 	}
-	fmt.Println("first generation")
-	printList(life)
-	fmt.Println("")
-
-	// turn
-	for i:=0; i<100; i++{
-		lifeNext := make([][]int, height)
-		lifeCount:=make([][]int, height)
-		for i := 0; i < height; i++{
-			lifeCount[i] = make([]int, width)
-			lifeNext[i] = make([]int, width)
-			copy(lifeNext[i],life[i])
-		}
-		for y:=0; y<height; y++{
-			for x:=0; x<width; x++{
-				liveNeighbor := countLiveNeighbor(life, x, y, width, height)
-				// for debug
-				lifeCount[y][x] = liveNeighbor
-				//lifeNextのijを更新する
-				//lifeNextのijのポインタ、liveNeighborを渡せば良さそう？
-				//TODO: 下の行が元凶。たぶんリストのコピーが参照渡しになってるかも
-				updateOneCell(&lifeNext[y][x],life[y][x], liveNeighbor)
-			}
-		}
-		// printList(lifeCount)
-		life = lifeNext
-		fmt.Println(i+1,"th generation")
-		convertedLife :=convertLifeCell(life)
-		for i:=0; i<height;i++{
-			println(convertedLife[i])
-		}
-		fmt.Println("")
-		time.Sleep(time.Second*1)
-		fmt.Print("\033[H\033[2J")
-	}
+	return life
 }
 
-func countLiveNeighbor(list [][]int, x int, y int, width int, height int) int {
+func readPrebuiltCell()Cell{
+	//todo: not implemented
+	return Cell{}
+}
+
+func runRound(lifeNow Cell)Cell{
+	height:=len(lifeNow)
+	width:=len(lifeNow[0])
+	lifeNext := make(Cell, height)
+	// DeepCopy(&lifeNext, &lifeNow)// lifeNextを(height, widthで初期化したい。)
+	for i := 0; i < height; i++{
+		lifeNext[i] = make([]int, width)
+		copy(lifeNext[i],lifeNow[i])
+	}
+	for y:=0; y<height; y++{
+		for x:=0; x<width; x++{
+			liveNeighbor := countLiveNeighbor(lifeNow, x, y, width, height)
+			updateOneCell(&lifeNext[y][x],lifeNow[y][x], liveNeighbor)
+		}
+	}
+	return lifeNext
+}
+
+func countLiveNeighbor(list Cell, x int, y int, width int, height int) int {
 	count :=0
 
 	//遷移のパターンを全列挙、枠外は除外
@@ -95,7 +119,7 @@ func countLiveNeighbor(list [][]int, x int, y int, width int, height int) int {
 	}
 	return count
 }
-func convertLifeCell(life [][]int)[]string{
+func convertLifeCell(life Cell)[]string{
 	res:=make([]string, len(life))
 	converter:=map[int]string{
 		0:"□ ",
@@ -123,4 +147,3 @@ func updateOneCell(nextCell *int, nowCell int, liveNeighbor int){
 		*nextCell = 0
 	}
 }
-
