@@ -12,6 +12,14 @@ func PrintList(list Cell){
 	}
 }
 
+func MakeCell(height int, width int)Cell{
+	var cell Cell
+	cell = make(Cell, height)
+	for i := 0; i < height; i++ {
+		cell[i] = make([]int, width)
+	}
+	return cell
+}
 func DeepCopy(dst *Cell, src *Cell){
 	//Didnt work, src cannnot copy into dst
 	for i := 0; i < len(*dst); i++{

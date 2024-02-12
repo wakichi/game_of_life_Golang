@@ -32,23 +32,13 @@ func initialize()(int, Cell){
 }
 
 func runGame(numRound int, initialCell Cell){
-	var lifeNow Cell = make(Cell, len(initialCell))
-	for i := 0; i < numRound; i++{
-		lifeNow = make(Cell, len(initialCell[i]))
-	}
-	// DeepCopy(&lifeNow, &initialCell)// todo ここのcopylifeNowにできていない。
-	for i := 0; i < len(initialCell); i++{
-		lifeNow[i] = make([]int, len(initialCell[i]))
-		copy(lifeNow[i],initialCell[i])
-	}
+	lifeNow := MakeCell(len(initialCell), len(initialCell[0]))
+	DeepCopy(&lifeNow, &initialCell)
 	for i := 0; i<numRound;i++{
 		var lifeNext Cell
 		lifeNext = runRound(lifeNow)
 		PrintResult(lifeNext, i)
-		// DeepCopy(lifeNow, lifeNext)
-		for i := 0; i < len(lifeNow); i++{
-			copy(lifeNow[i],lifeNext[i])
-		}
+		DeepCopy(&lifeNow, &lifeNext)
 	}
 }
                                                     
@@ -60,10 +50,7 @@ func makeRandomCell()Cell{
 	fmt.Println("enter height as int")
 	fmt.Scan(&height)
 	fmt.Println(height)
-	var life = make(Cell, height)
-	for i := 0; i < height; i++{
-		life[i] = make([]int, width)
-	}
+	var life = MakeCell(height, width)
 	//initialize cells
 	for i:=0; i<len(life); i++{
 		for j := 0; j < len(life[i]); j++{
@@ -77,18 +64,14 @@ func makeRandomCell()Cell{
 
 func readPrebuiltCell()Cell{
 	//todo: not implemented
+	panic("not implemented")
 	return Cell{}
 }
 
 func runRound(lifeNow Cell)Cell{
 	height:=len(lifeNow)
 	width:=len(lifeNow[0])
-	lifeNext := make(Cell, height)
-	// DeepCopy(&lifeNext, &lifeNow)// lifeNextを(height, widthで初期化したい。)
-	for i := 0; i < height; i++{
-		lifeNext[i] = make([]int, width)
-		copy(lifeNext[i],lifeNow[i])
-	}
+	lifeNext := MakeCell(len(lifeNow), len(lifeNow[0]))
 	for y:=0; y<height; y++{
 		for x:=0; x<width; x++{
 			liveNeighbor := countLiveNeighbor(lifeNow, x, y, width, height)
@@ -107,7 +90,6 @@ func countLiveNeighbor(list Cell, x int, y int, width int, height int) int {
 			if i ==0 && j ==0 {
 				continue
 			}
-			//debug nx, nyの列挙は良さそう
 			nx:=x+j
 			ny:=y+i
 			//ngパターンを除外
@@ -119,6 +101,7 @@ func countLiveNeighbor(list Cell, x int, y int, width int, height int) int {
 	}
 	return count
 }
+
 func convertLifeCell(life Cell)[]string{
 	res:=make([]string, len(life))
 	converter:=map[int]string{
