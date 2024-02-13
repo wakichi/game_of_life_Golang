@@ -1,5 +1,6 @@
 ## これはなに？
 go言語の学習のためにgame of lifeをつくってみました。
+It's my first golang project
 
 ## どんなことができるの？
 - ワールドサイズを選んでランダムに初期状態を生成できます。
@@ -7,8 +8,9 @@ go言語の学習のためにgame of lifeをつくってみました。
 - こんな感じで動作します。(todo: gitでfig貼る)
 
 ## 難しかったところメモ
-- 参照渡しと値渡しを雑に実装してハマった。これの解はコピーする場合は基本deep copy, 特に意図した場合のみshallowにする
+- 参照渡しと値渡しを雑に実装してハマった。値のみコピーする場合はdeep copy, 特に意図した場合のみshallowにする
 - deepCopyをdstとsrcをとる関数としたときに、dstにコピーされなくて困った。それぞれポインタで渡したらうまくいった。
+- go installやgo getあたり、package, module, go.sum,go.modあたりがよくわかっていない
 
 ## go言語のいいところ
 - 型がある
